@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+requests
+beautifulsoup4
+redis
+python-dotenv
+colorama
