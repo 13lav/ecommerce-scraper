@@ -5,7 +5,7 @@ from app.core.config import settings
 api_key_header = APIKeyHeader(name="access-token", auto_error=False)
 
 
-async def get_api_key(request: Request):
+async def match_api_key(request: Request):
     token = request.headers.get("access-token")
     if token == settings.API_KEY:
         return token

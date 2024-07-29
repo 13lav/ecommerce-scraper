@@ -9,24 +9,35 @@ from app.common.utils import download_image
 
 class Scraper:
     def __init__(self, pages: int = 1, proxy: str = None):
+        """
+        Scraper Constructor
+        :param pages:
+        :param proxy:
+        """
         self.pages = pages
         self.proxy = proxy
         self.base_url = "https://dentalstall.com/shop/"
-        self.retry_interval = 3  # time in seconds
+        self.retry_interval = 1  # time in seconds
         self.retry_attempts = 2
 
     def _generate_page_url(self, page_number) -> str:
+        """
+        Generate URL for specific page_number
+        :param page_number:
+        :return:
+        """
         url = self.base_url
         if page_number > 1:
             url += f"page/{page_number}/"
         return url
 
-    def fetch_page(self, url: str) -> bs4.BeautifulSoup:
-        page = requests.get(url, proxies={"http": self.proxy, "https": self.proxy})
-        soup = bs4.BeautifulSoup(page.content, "html.parser")
-        return soup
-
     def _get_page_content(self, url: str) -> bs4.BeautifulSoup:
+        """
+        Get Web Content Using BeautifulSoup
+        With Added Retry Feature.
+        :param url:
+        :return:
+        """
         for i in range(self.retry_attempts):
             soup = None
             try:
@@ -44,8 +55,12 @@ class Scraper:
                     return soup
 
     def get_scarped_data(self) -> List[object]:
+        """
+        Fetch, Parse and Scraped the Desired
+        :return:
+        """
         products_info = []
-        for page_number in range(119, 121):
+        for page_number in range(1, self.pages + 1):
             url = self._generate_page_url(page_number)
             logger.info(f"Fetching Page No. {page_number}.")
             page = self._get_page_content(url)
@@ -61,10 +76,10 @@ class Scraper:
                     price = None
                 image_url = product.find('img').get('data-lazy-src', product.find('img')['src'])
 
-                logger.info(f'Title: {title}')
-                print(f'Price: {price}')
-                print(f'image_url: {image_url}')
-                print('-' * 128)
+                # logger.info(f'Title: {title}')
+                # print(f'Price: {price}')
+                # print(f'Image_url: {image_url}')
+                # print('-' * 128)
 
                 product_obj = schemas.Product(
                     product_title=title,
@@ -75,6 +90,11 @@ class Scraper:
         return products_info
 
     def notify(self, count):
+        """
+        Generate Notification Text
+        :param count:
+        :return:
+        """
         notification_text = f"Scraping Completed: Added/Updated {count} Products Successfully."
         logger.info(notification_text)
         return notification_text
