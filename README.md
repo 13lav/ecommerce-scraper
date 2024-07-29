@@ -26,3 +26,64 @@ Features:
 - Contains simple authentication to the endpoint using a static token.
 
 - Users Redis to cache results. If the scraped product price has not changed, we do not update the data of such a product in the DB.
+
+
+
+Requirements
+
+- python 3.7+
+- fastapi
+- uvicorn
+- pydantic
+- sqlalchemy
+- requests
+- beautifulsoup4
+- redis
+- python-dotenv
+- colorama
+
+
+
+
+Installation
+
+- Clone the repository:
+
+    git clone https://github.com/13lav/ecommerce-scraper
+    cd ecommerce-scraper
+
+- Create and activate a virtual environment:
+
+    python3 -m venv env
+    source env/bin/activate 
+
+- Install the required packages:
+
+    pip install -r requirements.txt
+
+
+Usage
+
+- Run FastAPI server:
+
+    uvicorn app.main:app --reload
+
+Scrape products:
+
+  Make a below curl request to the /scrape endpoint with body parameters pages and proxy:
+
+  curl --location 'http://127.0.0.1:8000/api/v1/scrape/' \
+  --header 'accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'access-token: <token>' \
+  --data-raw '{
+    "pages": 2,
+    "proxy": "http://user:pass@123.45.67.89:8080"
+  }'
+
+Authentication:
+
+  Add .env file in root directory.
+
+   API_KEY=<token>
+
